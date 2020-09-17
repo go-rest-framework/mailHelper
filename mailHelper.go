@@ -14,10 +14,14 @@ type Mailer struct {
 func (m *Mailer) Send(to, subject, body string) {
 	from := m.Email
 	pass := m.Pass
+	mimev := "1.0"
+	ctype := "text/plain; charset=\"utf-8\""
 
-	msg := "From: " + from + "\n" +
-		"To: " + to + "\n" +
-		"Subject: " + subject + "\n\n" +
+	msg := "From: " + from + "\r\n" +
+		"To: " + to + "\r\n" +
+		"Subject: " + subject + "\r\n" +
+		"MIME-Version: " + mimev + "\r\n" +
+		"Content-Type: " + ctype + "\n\n" +
 		body
 
 	err := smtp.SendMail(
@@ -30,6 +34,9 @@ func (m *Mailer) Send(to, subject, body string) {
 
 	if err != nil {
 		log.Printf("smtp error: %s", err)
+		log.Println(msg)
 		return
 	}
+
+	log.Println(msg)
 }
