@@ -7,13 +7,23 @@ import (
 )
 
 type Mailer struct {
-	Email string
-	Pass  string
+	Email  string
+	Pass   string
+	Server string
+	Port   string
 }
 
 func (m *Mailer) Send(to, subject, body string) {
 	from := m.Email
 	pass := m.Pass
+	server := "smtp.gmail.com"
+	port := "587"
+	if m.Server != "" {
+		server = m.Server
+	}
+	if m.Port != "" {
+		port = m.Port
+	}
 	mimev := "1.0"
 	ctype := "text/plain; charset=\"utf-8\""
 
@@ -25,8 +35,8 @@ func (m *Mailer) Send(to, subject, body string) {
 		body
 
 	err := smtp.SendMail(
-		"smtp.gmail.com:587",
-		smtp.PlainAuth("", from, pass, "smtp.gmail.com"),
+		server+":"+port,
+		smtp.PlainAuth("", from, pass, server),
 		from,
 		[]string{to},
 		[]byte(msg),
